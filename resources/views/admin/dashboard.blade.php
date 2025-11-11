@@ -1,9 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Complaints') }}
-        </h2>
-    </x-slot>
 
     <script src="{{ asset('js/complaint-search.js') }}"></script>
 
@@ -33,28 +28,40 @@
         });
     </script>
 
-    <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-semibold mb-4">
-                        @if(Auth::user()->role === 'admin')
-                            All Complaints
-                        @else
-                            Your Complaints
-                        @endif
-                    </h3>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-                    @if(Auth::user()->role !== 'admin')
-                        <a href="{{ route('complaints.create') }}"
-                           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mb-4 inline-block">
-                            + New Complaint
-                        </a>
-                    @endif
+            <!-- Complaint Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+                    <h3 class="text-lg font-medium">Total Complaints</h3>
+                    <p class="text-3xl font-bold text-blue-600 mt-2">{{ $totalComplaints }}</p>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+                    <h3 class="text-lg font-medium">Pending</h3>
+                    <p class="text-3xl font-bold text-yellow-500 mt-2">{{ $pendingComplaints }}</p>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+                    <h3 class="text-lg font-medium">In Progress</h3>
+                    <p class="text-3xl font-bold text-orange-500 mt-2">{{ $inProgressComplaints }}</p>
+                </div>
+
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+                    <h3 class="text-lg font-medium">Resolved</h3>
+                    <p class="text-3xl font-bold text-green-500 mt-2">{{ $resolvedComplaints }}</p>
+                </div>
+            </div>
+
+            <!-- Complaints Management -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold mb-4">Manage Complaints</h3>
 
                     <!-- Search and Filter -->
                     <div class="mb-4 flex flex-wrap gap-4 justify-between items-center">
-                        <form method="GET" action="{{ route('complaints.index') }}" class="flex gap-2">
+                        <form method="GET" action="{{ route('admin.dashboard') }}" class="flex gap-2">
                             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by category, details, or sitio" class="border border-gray-300 rounded px-3 py-2 flex-1">
                             <select name="status" class="border border-gray-300 rounded px-3 py-2">
                                 <option value="">All Statuses</option>
@@ -64,12 +71,14 @@
                             </select>
                             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Filter</button>
                         </form>
+                        <a href="{{ route('admin.history') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                            View History
+                        </a>
                     </div>
 
                     @if($complaints->isEmpty())
                         <p>No complaints submitted yet.</p>
                     @else
-
                         <div class="overflow-x-auto">
                             <table class="min-w-full border border-gray-300">
                                 <thead>
@@ -105,32 +114,33 @@
                                             </td>
                                             <td class="px-4 py-2 border">{{ $complaint->created_at->format('Y-m-d') }}</td>
                                             <td class="px-4 py-2 border">
-                                                @if(Auth::user()->role !== 'admin')
-                                                    <a href="{{ route('complaints.edit', $complaint) }}" class="text-blue-600 hover:text-blue-800 mr-2">Edit</a>
-                                                @endif
-                                                @if(Auth::user()->role === 'admin')
-                                                    @if($complaint->status === 'pending')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="in-progress">
-                                                            <button type="submit" class="text-green-600 hover:text-green-800">Mark In Progress</button>
-                                                        </form>
-                                                    @elseif($complaint->status === 'in-progress')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="resolved">
-                                                            <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
-                                                        </form>
-                                                    @elseif($complaint->status === 'resolved')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="pending">
-                                                            <button type="submit" class="text-yellow-600 hover:text-yellow-800">Mark as Pending</button>
-                                                        </form>
-                                                    @endif
+                                                @if($complaint->status === 'pending')
+                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="in-progress">
+                                                        <button type="submit" class="text-green-600 hover:text-green-800">Mark In Progress</button>
+                                                    </form>
+                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline ml-2">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="resolved">
+                                                        <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
+                                                    </form>
+                                                @elseif($complaint->status === 'in-progress')
+                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="resolved">
+                                                        <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
+                                                    </form>
+                                                @elseif($complaint->status === 'resolved')
+                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="pending">
+                                                        <button type="submit" class="text-yellow-600 hover:text-yellow-800">Mark as Pending</button>
+                                                    </form>
                                                 @endif
                                                 <form action="{{ route('complaints.destroy', $complaint) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this complaint?')">
                                                     @csrf
@@ -151,6 +161,9 @@
                     @endif
                 </div>
             </div>
+
+
+
         </div>
     </div>
 </x-app-layout>

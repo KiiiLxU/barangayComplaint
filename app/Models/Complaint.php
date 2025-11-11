@@ -16,11 +16,19 @@ class Complaint extends Model
         'sitio',
         'photo',
         'status',
+        'assigned_admin_id',
+        'status_updated_at',
     ];
 
     // A complaint belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // A complaint can be assigned to an admin
+    public function assignedAdmin()
+    {
+        return $this->belongsTo(User::class, 'assigned_admin_id');
     }
 }

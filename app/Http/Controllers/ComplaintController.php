@@ -13,17 +13,33 @@ class ComplaintController extends Controller
      * Display a listing of the user's complaints (for normal user)
      * or all complaints (for admin).
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
+        $query = Complaint::with('user');
 
-        if ($user->role === 'admin') {
-            // Admin sees all complaints
-            $complaints = Complaint::with('user')->latest()->get();
-        } else {
+        if ($user->role !== 'admin') {
             // User sees only their complaints
-            $complaints = Complaint::where('user_id', $user->id)->latest()->get();
+            $query->where('user_id', $user->id);
         }
+
+        // Search functionality
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('category', 'like', "%{$search}%")
+                  ->orWhere('details', 'like', "%{$search}%")
+                  ->orWhere('sitio', 'like', "%{$search}%");
+            });
+        }
+
+        // Status filter
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
+        // Pagination
+        $complaints = $query->latest()->paginate(10);
 
         return view('complaints.index', compact('complaints'));
     }
@@ -71,7 +87,10 @@ class ComplaintController extends Controller
      */
     public function edit(Complaint $complaint)
     {
-        $this->authorizeAccess($complaint);
+        // Only allow users to edit their own complaints, not admins
+        if (Auth::user()->role === 'admin' || Auth::id() !== $complaint->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
         return view('complaints.edit', compact('complaint'));
     }
 
@@ -82,15 +101,30 @@ class ComplaintController extends Controller
     {
         $this->authorizeAccess($complaint);
 
-        $request->validate([
-            'category' => 'required|string|max:100',
-            'details' => 'required|string',
-            'sitio' => 'nullable|string|max:255',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'status' => 'in:pending,in review,resolved',
-        ]);
+        // Check if this is a status-only update (from admin dashboard)
+        if ($request->has('status') && !$request->has('category')) {
+            $request->validate([
+                'status' => 'required|in:pending,in-progress,resolved',
+            ]);
+            $data = $request->only(['status']);
+        } else {
+            $request->validate([
+                'category' => 'required|string|max:100',
+                'details' => 'required|string',
+                'sitio' => 'nullable|string|max:255',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'status' => 'in:pending,in-progress,resolved',
+            ]);
+            $data = $request->only(['category', 'details', 'sitio', 'status']);
+        }
 
-        $data = $request->only(['category', 'details', 'sitio', 'status']);
+        // Check if status is being updated
+        if ($complaint->status !== $request->status) {
+            $data['status_updated_at'] = now();
+            if (Auth::user()->role === 'admin') {
+                $data['assigned_admin_id'] = Auth::id(); // Assign current admin
+            }
+        }
 
         if ($request->hasFile('photo')) {
             if ($complaint->photo) {
@@ -101,7 +135,8 @@ class ComplaintController extends Controller
 
         $complaint->update($data);
 
-        return redirect()->route('complaints.index')->with('success', 'Complaint updated successfully!');
+        $redirectRoute = Auth::user()->role === 'admin' ? 'admin.dashboard' : 'complaints.index';
+        return redirect()->route($redirectRoute)->with('success', 'Complaint updated successfully!');
     }
 
     /**

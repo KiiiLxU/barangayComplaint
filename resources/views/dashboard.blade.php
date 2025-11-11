@@ -12,10 +12,21 @@
 
                 <p class="mb-4">You're logged in to the Barangay Poblacion Complaint System.</p>
 
-                <a href="{{ route('complaints.index') }}" 
-                   class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                   Go to Complaint System
-                </a>
+                @if(Auth::user()->role === 'admin')
+                    <a href="{{ route('admin.dashboard') }}"
+                       class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mr-4">
+                       Admin Dashboard
+                    </a>
+                    <a href="{{ route('complaints.index') }}"
+                       class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                       Manage Complaints
+                    </a>
+                @else
+                    <a href="{{ route('complaints.index') }}"
+                       class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                       Go to Complaint System
+                    </a>
+                @endif
             </div>
         </div>
     </div>
