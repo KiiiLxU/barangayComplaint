@@ -4,16 +4,17 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent hover:from-primary-700 hover:to-secondary-700 transition-all duration-300 transform hover:scale-105">
-                        Barangay Complaint
-                    </a>
-                </div>
+              <div class="shrink-0 flex items-center">
+    <a href="{{ route('dashboard') }}">
+        <img src="{{ asset('bcs.png') }}" alt="Barangay Complaint System" class="h-10 w-auto">
+    </a>
+</div>
+
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="hover:text-primary-600 transition-colors duration-200">
-                        {{ __('Dashboard') }}
+                        {{ __('Barangay Complaint System') }}
                     </x-nav-link>
                 </div>
             </div>
