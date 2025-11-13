@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('user'); // default role is 'user'
+            $table->string('role')->default('resident'); // default role is 'resident'
         });
     }
 

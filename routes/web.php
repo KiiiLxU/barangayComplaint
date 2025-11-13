@@ -10,7 +10,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    if (Auth::user()->role === 'admin') {
+    if (Auth::user()->role === 'kagawad' || Auth::user()->role === 'kapitan') {
         return redirect(route('admin.dashboard'));
     }
     return view('dashboard');

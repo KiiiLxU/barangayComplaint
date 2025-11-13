@@ -1,0 +1,316 @@
+openapi: 3.0.3
+info:
+  title: Barangay Complaint System API
+  version: 1.0.0
+  description: OpenAPI 3 documentation for the API v1 endpoints (auth, users, complaints, officials).
+servers:
+  - url: /api/v1
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        contact_number:
+          type: string
+        photo:
+          type: string
+    Complaint:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        category:
+          type: string
+        description:
+          type: string
+        purok:
+          type: string
+        street:
+          type: string
+        photo:
+          type: string
+        status:
+          type: string
+    BrgyOfficial:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        position:
+          type: string
+        purok_assigned:
+          type: string
+        contact_no:
+          type: string
+paths:
+  /login:
+    post:
+      summary: Login and receive API token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      token:
+                        type: string
+  /register:
+    post:
+      summary: Register a new user and receive API token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+      responses:
+        '201':
+          description: Registration successful
+  /logout:
+    post:
+      summary: Logout (revokes current token)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logged out
+  /users:
+    get:
+      summary: List users (admin only)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A paginated list of users
+    post:
+      summary: Create a user (admin only)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                photo:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: User created
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get user by id
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User object
+    put:
+      summary: Update user
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: User updated
+    delete:
+      summary: Delete user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User deleted
+  /complaints:
+    get:
+      summary: List complaints (user or admin)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Paginated complaints
+    post:
+      summary: Create a complaint
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                description:
+                  type: string
+                photo:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Complaint created
+  /complaints/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get complaint by id
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Complaint object
+    put:
+      summary: Update complaint
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Complaint updated
+    delete:
+      summary: Delete complaint (admin only)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Complaint deleted
+  /officials:
+    get:
+      summary: List barangay officials
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Paginated officials
+    post:
+      summary: Create official (admin only)
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                position:
+                  type: string
+                photo:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Official created
+  /officials/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Get official by id
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Official object
+    put:
+      summary: Update official
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Official updated
+    delete:
+      summary: Delete official (admin only)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Official deleted
+
+info:
+  contact:
+    name: API Support
+    email: support@example.com

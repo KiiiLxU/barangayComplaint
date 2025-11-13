@@ -33,25 +33,25 @@
 
             <!-- Complaint Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+                <a href="{{ route('admin.dashboard') }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
                     <h3 class="text-lg font-medium">Total Complaints</h3>
                     <p class="text-3xl font-bold text-blue-600 mt-2">{{ $totalComplaints }}</p>
-                </div>
+                </a>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+                <a href="{{ route('admin.dashboard', ['status' => 'pending']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
                     <h3 class="text-lg font-medium">Pending</h3>
                     <p class="text-3xl font-bold text-yellow-500 mt-2">{{ $pendingComplaints }}</p>
-                </div>
+                </a>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+                <a href="{{ route('admin.dashboard', ['status' => 'in-progress']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
                     <h3 class="text-lg font-medium">In Progress</h3>
                     <p class="text-3xl font-bold text-orange-500 mt-2">{{ $inProgressComplaints }}</p>
-                </div>
+                </a>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
+                <a href="{{ route('admin.dashboard', ['status' => 'resolved']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
                     <h3 class="text-lg font-medium">Resolved</h3>
                     <p class="text-3xl font-bold text-green-500 mt-2">{{ $resolvedComplaints }}</p>
-                </div>
+                </a>
             </div>
 
             <!-- Complaints Management -->

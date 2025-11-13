@@ -9,8 +9,8 @@ class AdminMiddleware
 {
     public function handle($request, Closure $next)
     {
-        // Allow only users with role 'admin'
-        if (Auth::check() && Auth::user()->role === 'admin') {
+        // Allow users with role 'kagawad' or 'kapitan'
+        if (Auth::check() && (Auth::user()->role === 'kagawad' || Auth::user()->role === 'kapitan')) {
             return $next($request);
         }
 

@@ -15,18 +15,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
+        // Create kagawad user (admin role)
         User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'role' => 'admin',
+            'name' => 'Kagawad User',
+            'email' => 'kagawad@example.com',
+            'role' => 'kagawad',
         ]);
 
-        // Create regular user
+        // Create kapitan user (super admin)
         User::factory()->create([
-            'name' => 'Regular User',
-            'email' => 'user@example.com',
-            'role' => 'user',
+            'name' => 'Kapitan User',
+            'email' => 'kapitan@example.com',
+            'role' => 'kapitan',
+        ]);
+
+        // Create regular resident user
+        User::factory()->create([
+            'name' => 'Resident User',
+            'email' => 'resident@example.com',
+            'role' => 'resident',
         ]);
 
         // Create additional test users

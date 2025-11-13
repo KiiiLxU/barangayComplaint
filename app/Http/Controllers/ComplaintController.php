@@ -18,7 +18,8 @@ class ComplaintController extends Controller
         $user = Auth::user();
         $query = Complaint::with('user');
 
-        if ($user->role !== 'admin') {
+        $allowedRoles = ['admin', 'kagawad', 'kapitan'];
+        if (!in_array($user->role, $allowedRoles)) {
             // User sees only their complaints
             $query->where('user_id', $user->id);
         }
@@ -88,7 +89,8 @@ class ComplaintController extends Controller
     public function edit(Complaint $complaint)
     {
         // Only allow users to edit their own complaints, not admins
-        if (Auth::user()->role === 'admin' || Auth::id() !== $complaint->user_id) {
+        $allowedRoles = ['admin', 'kagawad', 'kapitan'];
+        if (in_array(Auth::user()->role, $allowedRoles) || Auth::id() !== $complaint->user_id) {
             abort(403, 'Unauthorized action.');
         }
         return view('complaints.edit', compact('complaint'));
@@ -121,7 +123,8 @@ class ComplaintController extends Controller
         // Check if status is being updated
         if ($complaint->status !== $request->status) {
             $data['status_updated_at'] = now();
-            if (Auth::user()->role === 'admin') {
+            $allowedRoles = ['admin', 'kagawad', 'kapitan'];
+            if (in_array(Auth::user()->role, $allowedRoles)) {
                 $data['assigned_admin_id'] = Auth::id(); // Assign current admin
             }
         }
@@ -135,7 +138,8 @@ class ComplaintController extends Controller
 
         $complaint->update($data);
 
-        $redirectRoute = Auth::user()->role === 'admin' ? 'admin.dashboard' : 'complaints.index';
+        $allowedRoles = ['admin', 'kagawad', 'kapitan'];
+        $redirectRoute = in_array(Auth::user()->role, $allowedRoles) ? 'admin.dashboard' : 'complaints.index';
         return redirect()->route($redirectRoute)->with('success', 'Complaint updated successfully!');
     }
 
@@ -160,7 +164,8 @@ class ComplaintController extends Controller
      */
     private function authorizeAccess(Complaint $complaint)
     {
-        if (Auth::user()->role !== 'admin' && Auth::id() !== $complaint->user_id) {
+        $allowedRoles = ['admin', 'kagawad', 'kapitan'];
+        if (!in_array(Auth::user()->role, $allowedRoles) && Auth::id() !== $complaint->user_id) {
             abort(403, 'Unauthorized action.');
         }
     }
