@@ -84,6 +84,8 @@
                                                         <input type="hidden" name="status" value="resolved">
                                                         <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
                                                     </form>
+                                                    <br>
+                                                    <button onclick="sendOfficialMessage({{ $complaint->id }})" class="text-green-600 hover:text-green-800 text-sm mt-1">Send Message</button>
                                                 @elseif($complaint->status === 'resolved')
                                                     <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
                                                         @csrf
@@ -130,6 +132,27 @@
         </div>
     </div>
 
+    <!-- Modal for Sending Official Message -->
+    <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="relative bg-white rounded-lg max-w-2xl max-h-full p-6 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Send Official Message</h3>
+                <button onclick="closeMessageModal()" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+            </div>
+            <form id="messageForm" method="POST">
+                @csrf
+                <div class="mb-4">
+                    <label for="message" class="block font-medium text-sm text-gray-700">Message</label>
+                    <textarea name="message" id="message" rows="6" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" onclick="closeMessageModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded mr-2">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('modalImage').src = imageSrc;
@@ -169,6 +192,16 @@
             document.getElementById('detailsModal').classList.add('hidden');
         }
 
+        function sendOfficialMessage(complaintId) {
+            document.getElementById('messageForm').action = `/complaints/${complaintId}/send-message`;
+            document.getElementById('messageModal').classList.remove('hidden');
+        }
+
+        function closeMessageModal() {
+            document.getElementById('messageModal').classList.add('hidden');
+            document.getElementById('messageForm').reset();
+        }
+
         // Close modal when clicking outside the image
         document.getElementById('imageModal').addEventListener('click', function(event) {
             if (event.target === this) {
@@ -180,6 +213,13 @@
         document.getElementById('detailsModal').addEventListener('click', function(event) {
             if (event.target === this) {
                 closeDetailsModal();
+            }
+        });
+
+        // Close message modal when clicking outside
+        document.getElementById('messageModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeMessageModal();
             }
         });
     </script>

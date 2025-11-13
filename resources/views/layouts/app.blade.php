@@ -14,13 +14,13 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+    <body class="font-sans antialiased bg-gradient-to-br from-primary-50 via-white to-secondary-50 min-h-screen">
+        <div class="min-h-screen bg-transparent">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white shadow">
+                <header class="bg-white/80 backdrop-blur-sm shadow-lg border-b border-white/20 animate-slide-in">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
@@ -28,7 +28,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="animate-fade-in">
                 {{ $slot }}
             </main>
         </div>

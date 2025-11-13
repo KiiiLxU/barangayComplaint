@@ -41,4 +41,10 @@ class Complaint extends Model
     {
         return $this->belongsTo(BrgyOfficial::class, 'assigned_official_id');
     }
+
+    // A complaint can have many messages
+    public function messages()
+    {
+        return $this->hasMany(ComplaintMessage::class);
+    }
 }

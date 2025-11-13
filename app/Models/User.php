@@ -51,4 +51,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the barangay official associated with this user.
+     */
+    public function brgyOfficial()
+    {
+        return $this->hasOne(BrgyOfficial::class);
+    }
+
+    /**
+     * Get the complaints submitted by this user.
+     */
+    public function complaints()
+    {
+        return $this->hasMany(Complaint::class);
+    }
+
+    /**
+     * Get the messages sent by this user.
+     */
+    public function sentMessages()
+    {
+        return $this->hasMany(ComplaintMessage::class, 'sender_id');
+    }
 }

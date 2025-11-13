@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
             'position' => 'Kapitan',
             'contact_no' => '09123456789',
             'purok_assigned' => null,
+            'user_id' => User::where('role', 'kapitan')->first()->id,
         ]);
 
         \App\Models\BrgyOfficial::create([
@@ -51,6 +52,7 @@ class DatabaseSeeder extends Seeder
             'position' => 'Treasurer',
             'contact_no' => '09123456790',
             'purok_assigned' => null,
+            'user_id' => null,
         ]);
 
         \App\Models\BrgyOfficial::create([
@@ -58,6 +60,7 @@ class DatabaseSeeder extends Seeder
             'position' => 'Secretary',
             'contact_no' => '09123456791',
             'purok_assigned' => null,
+            'user_id' => null,
         ]);
 
         // Create 7 Kagawads
@@ -67,6 +70,7 @@ class DatabaseSeeder extends Seeder
                 'position' => 'Kagawad',
                 'contact_no' => '0912345679' . $i,
                 'purok_assigned' => $i,
+                'user_id' => User::where('name', 'Kagawad ' . $i)->first()->id,
             ]);
         }
 

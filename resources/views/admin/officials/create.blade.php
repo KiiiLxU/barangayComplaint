@@ -22,7 +22,7 @@
 
                     <div class="mb-4">
                         <label for="position" class="block font-medium text-sm text-gray-700">Position <span class="text-red-500">*</span></label>
-                        <select name="position" id="position" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                        <select name="position" id="position" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required onchange="toggleUserAccountFields()">
                             <option value="">Select Position</option>
                             <option value="Kapitan" {{ old('position') == 'Kapitan' ? 'selected' : '' }}>Kapitan</option>
                             <option value="Treasurer" {{ old('position') == 'Treasurer' ? 'selected' : '' }}>Treasurer</option>
@@ -32,6 +32,41 @@
                         @error('position')
                             <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                         @enderror
+                    </div>
+
+                    <!-- User Account Fields (only for Kagawad) -->
+                    <div id="userAccountFields" class="hidden">
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-3">Create User Account for Kagawad</h3>
+
+                            <div class="mb-4">
+                                <label for="email" class="block font-medium text-sm text-gray-700">Email <span class="text-red-500">*</span></label>
+                                <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                @error('email')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password" class="block font-medium text-sm text-gray-700">Password <span class="text-red-500">*</span></label>
+                                <input type="password" name="password" id="password"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required minlength="6" maxlength="15">
+                                <p class="text-sm text-gray-500 mt-1">Password must be 6-15 characters long</p>
+                                @error('password')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="password_confirmation" class="block font-medium text-sm text-gray-700">Confirm Password <span class="text-red-500">*</span></label>
+                                <input type="password" name="password_confirmation" id="password_confirmation"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                @error('password_confirmation')
+                                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-4">
@@ -79,4 +114,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleUserAccountFields() {
+            const positionSelect = document.getElementById('position');
+            const userAccountFields = document.getElementById('userAccountFields');
+            const emailField = document.getElementById('email');
+            const passwordField = document.getElementById('password');
+            const passwordConfirmationField = document.getElementById('password_confirmation');
+
+            if (positionSelect.value === 'Kagawad') {
+                userAccountFields.classList.remove('hidden');
+                emailField.setAttribute('required', 'required');
+                passwordField.setAttribute('required', 'required');
+                passwordConfirmationField.setAttribute('required', 'required');
+            } else {
+                userAccountFields.classList.add('hidden');
+                emailField.removeAttribute('required');
+                passwordField.removeAttribute('required');
+                passwordConfirmationField.removeAttribute('required');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleUserAccountFields();
+        });
+    </script>
 </x-app-layout>

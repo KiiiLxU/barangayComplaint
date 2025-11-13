@@ -15,6 +15,19 @@
         </div>
     </div>
 
+    <!-- Modal for Viewing Messages -->
+    <div id="messagesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="relative bg-white rounded-lg max-w-2xl max-h-full p-6 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Official Messages</h3>
+                <button onclick="closeMessagesModal()" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+            </div>
+            <div id="messagesContent" class="text-gray-700">
+                <!-- Messages will be loaded here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('modalImage').src = imageSrc;
@@ -25,10 +38,51 @@
             document.getElementById('imageModal').classList.add('hidden');
         }
 
+        function viewMessages(complaintId) {
+            // Fetch messages via AJAX
+            fetch(`/complaints/${complaintId}/messages`)
+                .then(response => response.json())
+                .then(data => {
+                    let messagesHtml = '';
+                    if (data.length === 0) {
+                        messagesHtml = '<p>No messages yet.</p>';
+                    } else {
+                        data.forEach(message => {
+                            messagesHtml += `
+                                <div class="mb-4 p-3 bg-gray-50 rounded">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <strong>${message.sender.name}</strong>
+                                        <small class="text-gray-500">${new Date(message.created_at).toLocaleString()}</small>
+                                    </div>
+                                    <p class="text-gray-700">${message.message}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                    document.getElementById('messagesContent').innerHTML = messagesHtml;
+                    document.getElementById('messagesModal').classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Error fetching messages:', error);
+                    alert('Error loading messages. Please try again.');
+                });
+        }
+
+        function closeMessagesModal() {
+            document.getElementById('messagesModal').classList.add('hidden');
+        }
+
         // Close modal when clicking outside the image
         document.getElementById('imageModal').addEventListener('click', function(event) {
             if (event.target === this) {
                 closeModal();
+            }
+        });
+
+        // Close messages modal when clicking outside
+        document.getElementById('messagesModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeMessagesModal();
             }
         });
     </script>
@@ -71,11 +125,11 @@
                     @else
 
                         <div class="overflow-x-auto">
-                            <table class="min-w-full border border-gray-300">
+                            <table class="w-full border border-gray-300 table-fixed">
                                 <thead>
                                     <tr class="bg-gray-100">
                                         <th class="px-4 py-2 border">Category</th>
-                                        <th class="px-4 py-2 border">Details</th>
+                                        <th class="px-4 py-2 border w-2/5">Details</th>
                                         <th class="px-4 py-2 border">Photo</th>
                                         <th class="px-4 py-2 border">Status</th>
                                         <th class="px-4 py-2 border">Date</th>
@@ -86,7 +140,11 @@
                                     @foreach($complaints as $complaint)
                                         <tr>
                                             <td class="px-4 py-2 border">{{ $complaint->category }}</td>
-                                            <td class="px-4 py-2 border">{{ Str::limit($complaint->details, 50) }}</td>
+                                            <td class="px-4 py-2 border">
+                                                <div class="truncate" title="{{ $complaint->details }}">
+                                                    {{ Str::limit($complaint->details, 30) }}
+                                                </div>
+                                            </td>
                                             <td class="px-4 py-2 border">
                                                 @if($complaint->photo)
                                                     <img src="{{ asset('storage/' . $complaint->photo) }}" alt="Complaint Photo" class="w-16 h-16 object-cover rounded cursor-pointer" onclick="openModal('{{ asset('storage/' . $complaint->photo) }}')">
@@ -107,6 +165,9 @@
                                             <td class="px-4 py-2 border">
                                                 @if(Auth::user()->role !== 'admin')
                                                     <a href="{{ route('complaints.edit', $complaint) }}" class="text-blue-600 hover:text-blue-800 mr-2">Edit</a>
+                                                    @if($complaint->messages->count() > 0)
+                                                        <button onclick="viewMessages({{ $complaint->id }})" class="text-green-600 hover:text-green-800 text-sm">View Messages ({{ $complaint->messages->count() }})</button>
+                                                    @endif
                                                 @endif
                                                 @if(Auth::user()->role === 'admin')
                                                     @if($complaint->status === 'pending')

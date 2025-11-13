@@ -16,7 +16,7 @@ class ComplaintController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $query = Complaint::with('user');
+        $query = Complaint::with('user', 'messages');
 
         $allowedRoles = ['admin', 'kagawad', 'kapitan'];
         if (!in_array($user->role, $allowedRoles)) {
@@ -158,7 +158,9 @@ class ComplaintController extends Controller
 
         $complaint->delete();
 
-        return redirect()->route('complaints.index')->with('success', 'Complaint deleted successfully!');
+        $allowedRoles = ['admin', 'kagawad', 'kapitan'];
+        $redirectRoute = in_array(Auth::user()->role, $allowedRoles) ? 'admin.dashboard' : 'complaints.index';
+        return redirect()->route($redirectRoute)->with('success', 'Complaint deleted successfully!');
     }
 
     /**

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BrgyOfficialController;
+use App\Http\Controllers\ComplaintMessageController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -27,6 +28,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::resource('complaints', ComplaintController::class);
     Route::post('/complaints/{complaint}/assign', [ComplaintController::class, 'assign'])->name('complaints.assign');
+    Route::post('/complaints/{complaint}/send-message', [ComplaintMessageController::class, 'sendOfficialMessage'])->name('complaints.send-message');
+    Route::get('/complaints/{complaint}/messages', [ComplaintMessageController::class, 'getMessages'])->name('complaints.messages');
 });
 
 Route::middleware(['auth'])->group(function () {
