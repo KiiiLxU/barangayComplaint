@@ -13,7 +13,7 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
@@ -66,6 +66,27 @@
                 <option value="Purok 7" {{ old('purok', $user->purok) == 'Purok 7' ? 'selected' : '' }}>Purok 7</option>
             </select>
             <x-input-error class="mt-2" :messages="$errors->get('purok')" />
+        </div>
+
+        <!-- Profile Picture Section -->
+        <div>
+            <x-input-label for="photo" :value="__('Profile Picture')" />
+            <div class="mt-2 flex items-center gap-4">
+                @if($user->photo)
+                    <img src="{{ asset('storage/' . $user->photo) }}" alt="Profile Picture" class="w-20 h-20 object-cover rounded-full border-2 border-gray-300">
+                @else
+                    <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center border-2 border-gray-300">
+                        <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                @endif
+                <div>
+                    <input id="photo" name="photo" type="file" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" accept="image/*">
+                    <p class="mt-1 text-sm text-gray-500">PNG, JPG, GIF up to 2MB</p>
+                </div>
+            </div>
+            <x-input-error class="mt-2" :messages="$errors->get('photo')" />
         </div>
 
         <div class="flex items-center gap-4">

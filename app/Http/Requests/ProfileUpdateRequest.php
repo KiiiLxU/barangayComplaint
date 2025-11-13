@@ -27,6 +27,7 @@ class ProfileUpdateRequest extends FormRequest
             ],
             'contact_number' => ['required', 'string', 'digits:11'],
             'purok' => ['required', 'string', 'max:255'],
+            'photo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 }

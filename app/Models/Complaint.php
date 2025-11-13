@@ -14,6 +14,7 @@ class Complaint extends Model
         'category',
         'details',
         'sitio',
+        'respondent',
         'photo',
         'status',
         'assigned_admin_id',

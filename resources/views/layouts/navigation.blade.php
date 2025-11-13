@@ -23,6 +23,15 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            @if(Auth::user()->photo)
+                                <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile" class="w-8 h-8 rounded-full mr-2 object-cover">
+                            @else
+                                <div class="w-8 h-8 bg-gray-300 rounded-full mr-2 flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            @endif
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">
@@ -37,7 +46,11 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-                        @if(Auth::user()->role === 'kapitan')
+                        @if(in_array(Auth::user()->role, ['kagawad', 'resident']))
+                            <x-dropdown-link :href="route('admin.officials.index')">
+                                {{ __('Barangay Officials') }}
+                            </x-dropdown-link>
+                        @elseif(Auth::user()->role === 'kapitan')
                             <x-dropdown-link :href="route('admin.officials.index')">
                                 {{ __('Barangay Officials') }}
                             </x-dropdown-link>
@@ -79,9 +92,20 @@
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            <div class="px-4 flex items-center">
+                @if(Auth::user()->photo)
+                    <img src="{{ asset('storage/' . Auth::user()->photo) }}" alt="Profile" class="w-10 h-10 rounded-full mr-3 object-cover">
+                @else
+                    <div class="w-10 h-10 bg-gray-300 rounded-full mr-3 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                @endif
+                <div>
+                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1">

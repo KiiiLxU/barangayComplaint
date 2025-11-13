@@ -71,6 +71,15 @@
                     </div>
 
                     <div class="mb-4">
+                        <label for="respondent" class="block font-medium text-sm text-gray-700">Respondent</label>
+                        <input type="text" name="respondent" id="respondent" value="{{ old('respondent') }}"
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        @error('respondent')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
                         <label for="photo" class="block font-medium text-sm text-gray-700">Upload Photo (optional)</label>
                         <input type="file" name="photo" id="photo" 
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">

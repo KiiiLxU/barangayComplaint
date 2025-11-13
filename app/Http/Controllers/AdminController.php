@@ -64,6 +64,7 @@ class AdminController extends Controller
         return response()->json([
             'category' => $complaint->category,
             'reported_by' => $complaint->user->name,
+            'respondent' => $complaint->respondent,
             'purok' => $complaint->sitio,
             'status' => ucfirst(str_replace('-', ' ', $complaint->status)),
             'date' => $complaint->created_at->format('Y-m-d H:i:s'),

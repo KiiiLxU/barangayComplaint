@@ -62,6 +62,7 @@ class ComplaintController extends Controller
             'category' => 'required|string|max:100',
             'details' => 'required|string',
             'sitio' => 'required|string|max:255',
+            'respondent' => 'nullable|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -76,6 +77,7 @@ class ComplaintController extends Controller
             'category' => $request->category,
             'details' => $request->details,
             'sitio' => $request->sitio,
+            'respondent' => $request->respondent,
             'photo' => $photoPath,
             'status' => 'pending',
         ]);

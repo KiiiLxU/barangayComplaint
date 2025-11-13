@@ -42,6 +42,7 @@
                         <div class="space-y-4">
                             <div><strong>Category:</strong> ${data.category}</div>
                             <div><strong>Reported By:</strong> ${data.reported_by}</div>
+                            <div><strong>Respondent:</strong> ${data.respondent || 'N/A'}</div>
                             <div><strong>Purok:</strong> ${data.purok || 'N/A'}</div>
                             <div><strong>Status:</strong> ${data.status}</div>
                             <div><strong>Date:</strong> ${data.date}</div>
@@ -156,6 +157,7 @@
                                     <tr class="bg-gray-100">
                                         <th class="px-4 py-2 border">Category</th>
                                         <th class="px-4 py-2 border">Reported By</th>
+                                        <th class="px-4 py-2 border">Respondent</th>
                                         <th class="px-4 py-2 border">Purok</th>
                                         <th class="px-4 py-2 border">Details</th>
                                         <th class="px-4 py-2 border">Photo</th>
@@ -169,6 +171,7 @@
                                         <tr>
                                             <td class="px-4 py-2 border">{{ $complaint->category }}</td>
                                             <td class="px-4 py-2 border">{{ $complaint->user->name }}</td>
+                                            <td class="px-4 py-2 border">{{ $complaint->respondent ?: 'N/A' }}</td>
                                             <td class="px-4 py-2 border">{{ $complaint->sitio ?: 'N/A' }}</td>
                                             <td class="px-4 py-2 border">{{ Str::limit($complaint->details, 50) }}
                                                 @if(strlen($complaint->details) > 50)

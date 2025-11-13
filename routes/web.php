@@ -33,7 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('admin')->name('admin.dashboard');
     Route::get('/admin/history', [AdminController::class, 'history'])->middleware('admin')->name('admin.history');
     Route::get('/admin/complaints/{id}/details', [AdminController::class, 'getComplaintDetails'])->middleware('admin')->name('admin.complaint.details');
-    Route::resource('admin/officials', BrgyOfficialController::class, ['as' => 'admin'])->middleware('admin');
+    Route::get('admin/officials', [BrgyOfficialController::class, 'index'])->name('admin.officials.index');
+    Route::resource('admin/officials', BrgyOfficialController::class, ['as' => 'admin'])->except(['index'])->middleware('admin');
 });
 
 // Separate middleware for kagawad dashboard - only kagawads can access
