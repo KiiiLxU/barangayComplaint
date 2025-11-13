@@ -35,7 +35,11 @@
                                     @foreach($resolvedComplaints as $complaint)
                                         <tr>
                                             <td class="px-4 py-2 border">{{ $complaint->category }}</td>
-                                            <td class="px-4 py-2 border">{{ $complaint->details }}</td>
+                                            <td class="px-4 py-2 border">{{ Str::limit($complaint->details, 50) }}
+                                                @if(strlen($complaint->details) > 50)
+                                                    <br><button onclick="showFullDetails({{ $complaint->id }})" class="text-blue-600 hover:text-blue-800 text-xs mt-1">See More Details</button>
+                                                @endif
+                                            </td>
                                             <td class="px-4 py-2 border">
                                                 @if($complaint->photo)
                                                     <img src="{{ asset('storage/' . $complaint->photo) }}" alt="Complaint Photo" class="w-20 h-20 object-cover rounded cursor-pointer" onclick="openModal('{{ asset('storage/' . $complaint->photo) }}')">
@@ -72,6 +76,19 @@
         </div>
     </div>
 
+    <!-- Modal for Full Details -->
+    <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="relative bg-white rounded-lg max-w-2xl max-h-full p-6 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Complaint Details</h3>
+                <button onclick="closeDetailsModal()" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+            </div>
+            <div id="complaintDetails" class="text-gray-700">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('modalImage').src = imageSrc;
@@ -80,6 +97,55 @@
 
         function closeModal() {
             document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function showFullDetails(complaintId) {
+            // Fetch complaint details via AJAX
+            fetch(`/admin/complaints/${complaintId}/details`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('complaintDetails').innerHTML = `
+                        <div class="space-y-4">
+                            <div><strong>Category:</strong> ${data.category}</div>
+                            <div><strong>Reported By:</strong> ${data.reported_by}</div>
+                            <div><strong>Purok:</strong> ${data.purok || 'N/A'}</div>
+                            <div><strong>Status:</strong> ${data.status}</div>
+                            <div><strong>Date:</strong> ${data.date}</div>
+                            <div><strong>Details:</strong></div>
+                            <textarea class="w-full p-3 border border-gray-300 rounded bg-gray-50" rows="4" readonly>${data.details}</textarea>
+                            ${data.photo ? `<div><strong>Photo:</strong><br><img src="${data.photo}" alt="Complaint Photo" class="max-w-full h-auto mt-2 rounded"></div>` : ''}
+                        </div>
+                    `;
+                    document.getElementById('detailsModal').classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Error fetching complaint details:', error);
+                    alert('Error loading complaint details. Please try again.');
+                });
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+        }
+
+        // Close details modal when clicking outside
+        document.getElementById('detailsModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeDetailsModal();
+            }
+        });
+
+        function toggleDetails(element) {
+            const truncatedText = element.querySelector('.truncated-text');
+            const fullText = element.querySelector('.full-text');
+
+            if (fullText.classList.contains('hidden')) {
+                truncatedText.classList.add('hidden');
+                fullText.classList.remove('hidden');
+            } else {
+                fullText.classList.add('hidden');
+                truncatedText.classList.remove('hidden');
+            }
         }
     </script>
 </x-app-layout>

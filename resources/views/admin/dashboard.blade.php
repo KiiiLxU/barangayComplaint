@@ -10,6 +10,19 @@
         </div>
     </div>
 
+    <!-- Modal for Full Details -->
+    <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="relative bg-white rounded-lg max-w-2xl max-h-full p-6 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Complaint Details</h3>
+                <button onclick="closeDetailsModal()" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+            </div>
+            <div id="complaintDetails" class="text-gray-700">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         function openModal(imageSrc) {
             document.getElementById('modalImage').src = imageSrc;
@@ -20,10 +33,46 @@
             document.getElementById('imageModal').classList.add('hidden');
         }
 
+        function showFullDetails(complaintId) {
+            // Fetch complaint details via AJAX
+            fetch(`/admin/complaints/${complaintId}/details`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('complaintDetails').innerHTML = `
+                        <div class="space-y-4">
+                            <div><strong>Category:</strong> ${data.category}</div>
+                            <div><strong>Reported By:</strong> ${data.reported_by}</div>
+                            <div><strong>Purok:</strong> ${data.purok || 'N/A'}</div>
+                            <div><strong>Status:</strong> ${data.status}</div>
+                            <div><strong>Date:</strong> ${data.date}</div>
+                            <div><strong>Details:</strong></div>
+                            <textarea class="w-full p-3 border border-gray-300 rounded bg-gray-50" rows="4" readonly>${data.details}</textarea>
+                            ${data.photo ? `<div><strong>Photo:</strong><br><img src="${data.photo}" alt="Complaint Photo" class="max-w-full h-auto mt-2 rounded"></div>` : ''}
+                        </div>
+                    `;
+                    document.getElementById('detailsModal').classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Error fetching complaint details:', error);
+                    alert('Error loading complaint details. Please try again.');
+                });
+        }
+
+        function closeDetailsModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+        }
+
         // Close modal when clicking outside the image
         document.getElementById('imageModal').addEventListener('click', function(event) {
             if (event.target === this) {
                 closeModal();
+            }
+        });
+
+        // Close details modal when clicking outside
+        document.getElementById('detailsModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeDetailsModal();
             }
         });
     </script>
@@ -62,7 +111,29 @@
                     <!-- Search and Filter -->
                     <div class="mb-4 flex flex-wrap gap-4 justify-between items-center">
                         <form method="GET" action="{{ route('admin.dashboard') }}" class="flex gap-2">
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by category, details, or sitio" class="border border-gray-300 rounded px-3 py-2 flex-1">
+                            <select name="search" class="border border-gray-300 rounded px-3 py-2 flex-1">
+                                <option value="">Search by category</option>
+                                <option value="Noise Disturbance" {{ request('search') == 'Noise Disturbance' ? 'selected' : '' }}>Noise Disturbance</option>
+                                <option value="Domestic Dispute" {{ request('search') == 'Domestic Dispute' ? 'selected' : '' }}>Domestic Dispute</option>
+                                <option value="Theft or Property Damage" {{ request('search') == 'Theft or Property Damage' ? 'selected' : '' }}>Theft or Property Damage</option>
+                                <option value="Trespassing" {{ request('search') == 'Trespassing' ? 'selected' : '' }}>Trespassing</option>
+                                <option value="Physical Injury or Assault" {{ request('search') == 'Physical Injury or Assault' ? 'selected' : '' }}>Physical Injury or Assault</option>
+                                <option value="Public Disturbance or Scandal" {{ request('search') == 'Public Disturbance or Scandal' ? 'selected' : '' }}>Public Disturbance or Scandal</option>
+                                <option value="Vandalism" {{ request('search') == 'Vandalism' ? 'selected' : '' }}>Vandalism</option>
+                                <option value="Threat or Harassment" {{ request('search') == 'Threat or Harassment' ? 'selected' : '' }}>Threat or Harassment</option>
+                                <option value="Violation of Barangay Ordinance" {{ request('search') == 'Violation of Barangay Ordinance' ? 'selected' : '' }}>Violation of Barangay Ordinance</option>
+                                <option value="Illegal Gambling" {{ request('search') == 'Illegal Gambling' ? 'selected' : '' }}>Illegal Gambling</option>
+                                <option value="Curfew Violation" {{ request('search') == 'Curfew Violation' ? 'selected' : '' }}>Curfew Violation</option>
+                                <option value="Loud Karaoke or Parties" {{ request('search') == 'Loud Karaoke or Parties' ? 'selected' : '' }}>Loud Karaoke or Parties</option>
+                                <option value="Garbage or Sanitation Complaint" {{ request('search') == 'Garbage or Sanitation Complaint' ? 'selected' : '' }}>Garbage or Sanitation Complaint</option>
+                                <option value="Animal Nuisance (e.g., barking dogs or stray animals)" {{ request('search') == 'Animal Nuisance (e.g., barking dogs or stray animals)' ? 'selected' : '' }}>Animal Nuisance (e.g., barking dogs or stray animals)</option>
+                                <option value="Boundary or Property Dispute" {{ request('search') == 'Boundary or Property Dispute' ? 'selected' : '' }}>Boundary or Property Dispute</option>
+                                <option value="Unpaid Debt or Money Issue" {{ request('search') == 'Unpaid Debt or Money Issue' ? 'selected' : '' }}>Unpaid Debt or Money Issue</option>
+                                <option value="Neighbor Conflict" {{ request('search') == 'Neighbor Conflict' ? 'selected' : '' }}>Neighbor Conflict</option>
+                                <option value="Barangay Staff Misconduct" {{ request('search') == 'Barangay Staff Misconduct' ? 'selected' : '' }}>Barangay Staff Misconduct</option>
+                                <option value="Missing Person Report" {{ request('search') == 'Missing Person Report' ? 'selected' : '' }}>Missing Person Report</option>
+                                <option value="Other" {{ request('search') == 'Other' ? 'selected' : '' }}>Other</option>
+                            </select>
                             <select name="status" class="border border-gray-300 rounded px-3 py-2">
                                 <option value="">All Statuses</option>
                                 <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -72,7 +143,7 @@
                             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Filter</button>
                         </form>
                         <a href="{{ route('admin.history') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                            View History
+                            Case History
                         </a>
                     </div>
 
@@ -84,6 +155,8 @@
                                 <thead>
                                     <tr class="bg-gray-100">
                                         <th class="px-4 py-2 border">Category</th>
+                                        <th class="px-4 py-2 border">Reported By</th>
+                                        <th class="px-4 py-2 border">Purok</th>
                                         <th class="px-4 py-2 border">Details</th>
                                         <th class="px-4 py-2 border">Photo</th>
                                         <th class="px-4 py-2 border">Status</th>
@@ -95,7 +168,13 @@
                                     @foreach($complaints as $complaint)
                                         <tr>
                                             <td class="px-4 py-2 border">{{ $complaint->category }}</td>
-                                            <td class="px-4 py-2 border">{{ Str::limit($complaint->details, 50) }}</td>
+                                            <td class="px-4 py-2 border">{{ $complaint->user->name }}</td>
+                                            <td class="px-4 py-2 border">{{ $complaint->sitio ?: 'N/A' }}</td>
+                                            <td class="px-4 py-2 border">{{ Str::limit($complaint->details, 50) }}
+                                                @if(strlen($complaint->details) > 50)
+                                                    <br><button onclick="showFullDetails({{ $complaint->id }})" class="text-blue-600 hover:text-blue-800 text-xs mt-1">See More Details</button>
+                                                @endif
+                                            </td>
                                             <td class="px-4 py-2 border">
                                                 @if($complaint->photo)
                                                     <img src="{{ asset('storage/' . $complaint->photo) }}" alt="Complaint Photo" class="w-16 h-16 object-cover rounded cursor-pointer" onclick="openModal('{{ asset('storage/' . $complaint->photo) }}')">
@@ -111,36 +190,81 @@
                                                     @endif">
                                                     {{ ucfirst(str_replace('-', ' ', $complaint->status)) }}
                                                 </span>
+                                                @if($complaint->assigned_official_id)
+                                                    <br><small class="text-gray-600">Assigned: {{ $complaint->assignedOfficial->name }}</small>
+                                                @endif
                                             </td>
                                             <td class="px-4 py-2 border">{{ $complaint->created_at->format('Y-m-d') }}</td>
                                             <td class="px-4 py-2 border">
-                                                @if($complaint->status === 'pending')
-                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="in-progress">
-                                                        <button type="submit" class="text-green-600 hover:text-green-800">Mark In Progress</button>
-                                                    </form>
-                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline ml-2">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="resolved">
-                                                        <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
-                                                    </form>
-                                                @elseif($complaint->status === 'in-progress')
-                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="resolved">
-                                                        <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
-                                                    </form>
-                                                @elseif($complaint->status === 'resolved')
-                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="pending">
-                                                        <button type="submit" class="text-yellow-600 hover:text-yellow-800">Mark as Pending</button>
-                                                    </form>
+                                                @if(Auth::user()->role === 'kapitan')
+                                                    @if($complaint->status === 'pending')
+                                                        <form action="{{ route('complaints.assign', $complaint) }}" method="POST" class="inline mb-1">
+                                                            @csrf
+                                                            <select name="assigned_official_id" class="text-xs border border-gray-300 rounded px-2 py-1">
+                                                                <option value="">Assign to Kagawad</option>
+                                                                @foreach(\App\Models\BrgyOfficial::where('position', 'Kagawad')->get() as $official)
+                                                                    <option value="{{ $official->id }}">{{ $official->name }} (Purok {{ $official->purok_assigned }})</option>
+                                                                @endforeach
+                                                            </select>
+                                                            <button type="submit" class="text-purple-600 hover:text-purple-800 text-xs">Assign</button>
+                                                        </form>
+                                                        <br>
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="in-progress">
+                                                            <button type="submit" class="text-green-600 hover:text-green-800 text-xs">Mark In Progress</button>
+                                                        </form>
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline ml-1">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="resolved">
+                                                            <button type="submit" class="text-blue-600 hover:text-blue-800 text-xs">Mark Resolved</button>
+                                                        </form>
+                                                    @elseif($complaint->status === 'in-progress')
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="resolved">
+                                                            <button type="submit" class="text-blue-600 hover:text-blue-800 text-xs">Mark Resolved</button>
+                                                        </form>
+                                                    @elseif($complaint->status === 'resolved')
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="pending">
+                                                            <button type="submit" class="text-yellow-600 hover:text-yellow-800 text-xs">Mark as Pending</button>
+                                                        </form>
+                                                    @endif
+                                                @else
+                                                    @if($complaint->status === 'pending')
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="in-progress">
+                                                            <button type="submit" class="text-green-600 hover:text-green-800">Mark In Progress</button>
+                                                        </form>
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline ml-2">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="resolved">
+                                                            <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
+                                                        </form>
+                                                    @elseif($complaint->status === 'in-progress')
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="resolved">
+                                                            <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
+                                                        </form>
+                                                    @elseif($complaint->status === 'resolved')
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="pending">
+                                                            <button type="submit" class="text-yellow-600 hover:text-yellow-800">Mark as Pending</button>
+                                                        </form>
+                                                    @endif
                                                 @endif
                                                 <form action="{{ route('complaints.destroy', $complaint) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this complaint?')">
                                                     @csrf

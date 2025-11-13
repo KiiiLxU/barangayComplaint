@@ -9,12 +9,12 @@ class AdminMiddleware
 {
     public function handle($request, Closure $next)
     {
-        // Allow users with role 'kagawad' or 'kapitan'
-        if (Auth::check() && (Auth::user()->role === 'kagawad' || Auth::user()->role === 'kapitan')) {
+        // Allow only users with role 'kapitan'
+        if (Auth::check() && Auth::user()->role === 'kapitan') {
             return $next($request);
         }
 
-        // If user is not admin, redirect
+        // If user is not kapitan, redirect
         return redirect('/dashboard')->with('error', 'Access denied.');
     }
 }

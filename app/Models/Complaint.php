@@ -18,6 +18,9 @@ class Complaint extends Model
         'status',
         'assigned_admin_id',
         'status_updated_at',
+        'purok',
+        'street',
+        'assigned_official_id',
     ];
 
     // A complaint belongs to a user
@@ -30,5 +33,11 @@ class Complaint extends Model
     public function assignedAdmin()
     {
         return $this->belongsTo(User::class, 'assigned_admin_id');
+    }
+
+    // A complaint can be assigned to a barangay official
+    public function assignedOfficial()
+    {
+        return $this->belongsTo(BrgyOfficial::class, 'assigned_official_id');
     }
 }

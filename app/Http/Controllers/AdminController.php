@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Complaint;
 
 class AdminController extends Controller
@@ -54,5 +55,61 @@ class AdminController extends Controller
             ->paginate(15);
 
         return view('admin.history', compact('resolvedComplaints'));
+    }
+
+    public function getComplaintDetails($id)
+    {
+        $complaint = Complaint::with('user', 'assignedOfficial')->findOrFail($id);
+
+        return response()->json([
+            'category' => $complaint->category,
+            'reported_by' => $complaint->user->name,
+            'purok' => $complaint->sitio,
+            'status' => ucfirst(str_replace('-', ' ', $complaint->status)),
+            'date' => $complaint->created_at->format('Y-m-d H:i:s'),
+            'details' => $complaint->details,
+            'photo' => $complaint->photo ? asset('storage/' . $complaint->photo) : null,
+        ]);
+    }
+
+    public function kagawadDashboard()
+    {
+        $user = Auth::user();
+
+        // Ensure only kagawads can access this dashboard
+        if ($user->role !== 'kagawad') {
+            abort(403, 'Unauthorized access. This dashboard is only for kagawads.');
+        }
+
+        // Find the BrgyOfficial record that corresponds to this kagawad user
+        // Match by name exactly since user names are "Kagawad 1", "Kagawad 2", etc.
+        $official = \App\Models\BrgyOfficial::where('name', $user->name)->first();
+
+        if ($official) {
+            // Get complaints assigned to this kagawad's official record
+            $assignedComplaints = Complaint::with(['user', 'assignedOfficial'])
+                ->where('assigned_official_id', $official->id)
+                ->latest()
+                ->paginate(10);
+
+            $inProgressCount = Complaint::where('assigned_official_id', $official->id)
+                ->where('status', 'in-progress')
+                ->count();
+
+            $resolvedCount = Complaint::where('assigned_official_id', $official->id)
+                ->where('status', 'resolved')
+                ->count();
+        } else {
+            // Fallback if no matching official found
+            $assignedComplaints = collect([]);
+            $inProgressCount = 0;
+            $resolvedCount = 0;
+        }
+
+        return view('admin.kagawad-dashboard', compact(
+            'assignedComplaints',
+            'inProgressCount',
+            'resolvedCount'
+        ));
     }
 }

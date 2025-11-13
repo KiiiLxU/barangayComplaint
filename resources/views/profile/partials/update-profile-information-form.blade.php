@@ -47,6 +47,27 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="contact_number" :value="__('Contact Number')" />
+            <x-text-input id="contact_number" name="contact_number" type="tel" class="mt-1 block w-full" :value="old('contact_number', $user->contact_number)" required autocomplete="tel" pattern="[0-9]{11}" maxlength="11" />
+            <x-input-error class="mt-2" :messages="$errors->get('contact_number')" />
+        </div>
+
+        <div>
+            <x-input-label for="purok" :value="__('Purok')" />
+            <select id="purok" name="purok" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                <option value="">Select Purok</option>
+                <option value="Purok 1" {{ old('purok', $user->purok) == 'Purok 1' ? 'selected' : '' }}>Purok 1</option>
+                <option value="Purok 2" {{ old('purok', $user->purok) == 'Purok 2' ? 'selected' : '' }}>Purok 2</option>
+                <option value="Purok 3" {{ old('purok', $user->purok) == 'Purok 3' ? 'selected' : '' }}>Purok 3</option>
+                <option value="Purok 4" {{ old('purok', $user->purok) == 'Purok 4' ? 'selected' : '' }}>Purok 4</option>
+                <option value="Purok 5" {{ old('purok', $user->purok) == 'Purok 5' ? 'selected' : '' }}>Purok 5</option>
+                <option value="Purok 6" {{ old('purok', $user->purok) == 'Purok 6' ? 'selected' : '' }}>Purok 6</option>
+                <option value="Purok 7" {{ old('purok', $user->purok) == 'Purok 7' ? 'selected' : '' }}>Purok 7</option>
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('purok')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

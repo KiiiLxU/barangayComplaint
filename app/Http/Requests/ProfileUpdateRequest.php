@@ -25,6 +25,8 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'contact_number' => ['required', 'string', 'digits:11'],
+            'purok' => ['required', 'string', 'max:255'],
         ];
     }
 }

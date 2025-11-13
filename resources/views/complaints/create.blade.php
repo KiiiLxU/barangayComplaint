@@ -12,7 +12,7 @@
                     @csrf
 
                     <div class="mb-4">
-                        <label for="category" class="block font-medium text-sm text-gray-700">Category</label>
+                        <label for="category" class="block font-medium text-sm text-gray-700">Category <span class="text-red-500">*</span></label>
                         <select name="category" id="category"
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
                             <option value="">Select a category</option>
@@ -53,9 +53,9 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="sitio" class="block font-medium text-sm text-gray-700">Sitio / Purok</label>
+                        <label for="sitio" class="block font-medium text-sm text-gray-700">Sitio / Purok <span class="text-red-500">*</span></label>
                         <select name="sitio" id="sitio"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
                             <option value="">Select a Purok</option>
                             <option value="Purok 1" {{ old('sitio') == 'Purok 1' ? 'selected' : '' }}>Purok 1</option>
                             <option value="Purok 2" {{ old('sitio') == 'Purok 2' ? 'selected' : '' }}>Purok 2</option>
@@ -65,6 +65,9 @@
                             <option value="Purok 6" {{ old('sitio') == 'Purok 6' ? 'selected' : '' }}>Purok 6</option>
                             <option value="Purok 7" {{ old('sitio') == 'Purok 7' ? 'selected' : '' }}>Purok 7</option>
                         </select>
+                        @error('sitio')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <div class="mb-4">
@@ -78,9 +81,9 @@
                            class="bg-gray-300 text-gray-700 px-4 py-2 rounded mr-2 hover:bg-gray-400">
                             Cancel
                         </a>
-                        <button type="submit" 
+                        <button type="submit"
                             class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Submit Complaint
+                            Report
                         </button>
                     </div>
                 </form>

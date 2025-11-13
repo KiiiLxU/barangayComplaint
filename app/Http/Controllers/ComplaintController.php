@@ -61,7 +61,7 @@ class ComplaintController extends Controller
         $request->validate([
             'category' => 'required|string|max:100',
             'details' => 'required|string',
-            'sitio' => 'nullable|string|max:255',
+            'sitio' => 'required|string|max:255',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -157,6 +157,24 @@ class ComplaintController extends Controller
         $complaint->delete();
 
         return redirect()->route('complaints.index')->with('success', 'Complaint deleted successfully!');
+    }
+
+    /**
+     * Assign a complaint to a barangay official.
+     */
+    public function assign(Request $request, Complaint $complaint)
+    {
+        $request->validate([
+            'assigned_official_id' => 'required|exists:brgy_officials,id',
+        ]);
+
+        $complaint->update([
+            'assigned_official_id' => $request->assigned_official_id,
+            'status' => 'in-progress',
+            'status_updated_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', 'Complaint assigned successfully.');
     }
 
     /**

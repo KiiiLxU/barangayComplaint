@@ -12,6 +12,26 @@
 
                 <p class="mb-4">You're logged in to the Barangay Poblacion Complaint System.</p>
 
+                <!-- Profile Information Section -->
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-2">Your Profile Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <strong>Email:</strong> {{ Auth::user()->email }}
+                        </div>
+                        <div>
+                            <strong>Contact Number:</strong> {{ Auth::user()->contact_number }}
+                        </div>
+                        <div>
+                            <strong>Purok:</strong> {{ Auth::user()->purok }}
+                        </div>
+                    </div>
+                    <a href="{{ route('profile.edit') }}"
+                       class="inline-block mt-2 bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 text-sm">
+                       Edit Profile
+                    </a>
+                </div>
+
                 @if(Auth::user()->role === 'admin')
                     <a href="{{ route('admin.dashboard') }}"
                        class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mr-4">

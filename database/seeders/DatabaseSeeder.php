@@ -15,12 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create kagawad user (admin role)
-        User::factory()->create([
-            'name' => 'Kagawad User',
-            'email' => 'kagawad@example.com',
-            'role' => 'kagawad',
-        ]);
+        // Create kagawad users (admin role) - one for each purok
+        for ($i = 1; $i <= 7; $i++) {
+            User::factory()->create([
+                'name' => 'Kagawad ' . $i,
+                'email' => 'kagawad' . $i . '@example.com',
+                'role' => 'kagawad',
+            ]);
+        }
 
         // Create kapitan user (super admin)
         User::factory()->create([
@@ -35,6 +37,38 @@ class DatabaseSeeder extends Seeder
             'email' => 'resident@example.com',
             'role' => 'resident',
         ]);
+
+        // Create barangay officials
+        \App\Models\BrgyOfficial::create([
+            'name' => 'Juan Dela Cruz',
+            'position' => 'Kapitan',
+            'contact_no' => '09123456789',
+            'purok_assigned' => null,
+        ]);
+
+        \App\Models\BrgyOfficial::create([
+            'name' => 'Maria Santos',
+            'position' => 'Treasurer',
+            'contact_no' => '09123456790',
+            'purok_assigned' => null,
+        ]);
+
+        \App\Models\BrgyOfficial::create([
+            'name' => 'Pedro Reyes',
+            'position' => 'Secretary',
+            'contact_no' => '09123456791',
+            'purok_assigned' => null,
+        ]);
+
+        // Create 7 Kagawads
+        for ($i = 1; $i <= 7; $i++) {
+            \App\Models\BrgyOfficial::create([
+                'name' => 'Kagawad ' . $i,
+                'position' => 'Kagawad',
+                'contact_no' => '0912345679' . $i,
+                'purok_assigned' => $i,
+            ]);
+        }
 
         // Create additional test users
         User::factory(5)->create();
