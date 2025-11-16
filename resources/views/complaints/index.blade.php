@@ -17,10 +17,11 @@
 
     <!-- Modal for Viewing Messages -->
     <div id="messagesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="relative bg-white rounded-lg max-w-2xl max-h-full p-6 overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Official Messages</h3>
-                <button onclick="closeMessagesModal()" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+       <div class="relative bg-white rounded-lg w-full max-w-4xl max-h-[90vh] p-10 overflow-y-auto">
+
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-3xl font-semibold">Official Messages</h3>
+                <button onclick="closeMessagesModal()" class="text-gray-500 hover:text-gray-700 text-4xl font-bold">&times;</button>
             </div>
             <div id="messagesContent" class="text-gray-700">
                 <!-- Messages will be loaded here -->
@@ -48,13 +49,13 @@
                         messagesHtml = '<p>No messages yet.</p>';
                     } else {
                         data.forEach(message => {
-                            messagesHtml += `
-                                <div class="mb-4 p-3 bg-gray-50 rounded">
-                                    <div class="flex justify-between items-center mb-2">
+                                    messagesHtml += `
+                                <div class="mb-6 p-4 bg-gray-50 rounded">
+                                    <div class="flex justify-between items-center mb-3">
                                         <strong>${message.sender.name}</strong>
                                         <small class="text-gray-500">${new Date(message.created_at).toLocaleString()}</small>
                                     </div>
-                                    <p class="text-gray-700">${message.message}</p>
+                                    <textarea class="w-full p-4 border border-gray-300 rounded bg-white text-gray-700" rows="4" readonly style="min-height: 120px;">${message.message}</textarea>
                                 </div>
                             `;
                         });
@@ -106,7 +107,8 @@
                         </a>
                     @endif
 
-                    <!-- Search and Filter -->
+                    <!-- Search and Filter (only for admins, kapitan, kagawad) -->
+                    @if(Auth::user()->role === 'admin' || Auth::user()->role === 'kapitan' || Auth::user()->role === 'kagawad')
                     <div class="mb-4 flex flex-wrap gap-4 justify-between items-center">
                         <form method="GET" action="{{ route('complaints.index') }}" class="flex gap-2">
                             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by category, details, or sitio" class="border border-gray-300 rounded px-3 py-2 flex-1">
@@ -119,6 +121,7 @@
                             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Filter</button>
                         </form>
                     </div>
+                    @endif
 
                     @if($complaints->isEmpty())
                         <p>No complaints submitted yet.</p>
@@ -132,6 +135,7 @@
                                         <th class="px-4 py-2 border w-2/5">Details</th>
                                         <th class="px-4 py-2 border">Photo</th>
                                         <th class="px-4 py-2 border">Status</th>
+                                        <th class="px-4 py-2 border">Assigned Official</th>
                                         <th class="px-4 py-2 border">Date</th>
                                         <th class="px-4 py-2 border">Actions</th>
                                     </tr>
@@ -161,43 +165,53 @@
                                                     {{ ucfirst(str_replace('-', ' ', $complaint->status)) }}
                                                 </span>
                                             </td>
+                                            <td class="px-4 py-2 border">
+                                                @if($complaint->assigned_official_id)
+                                                    {{ $complaint->assignedOfficial->name }}<br>
+                                                    <small class="text-gray-600">({{ $complaint->assignedOfficial->position }})</small>
+                                                @else
+                                                    Not Assigned
+                                                @endif
+                                            </td>
                                             <td class="px-4 py-2 border">{{ $complaint->created_at->format('Y-m-d') }}</td>
                                             <td class="px-4 py-2 border">
-                                                @if(Auth::user()->role !== 'admin')
-                                                    <a href="{{ route('complaints.edit', $complaint) }}" class="text-blue-600 hover:text-blue-800 mr-2">Edit</a>
-                                                    @if($complaint->messages->count() > 0)
-                                                        <button onclick="viewMessages({{ $complaint->id }})" class="text-green-600 hover:text-green-800 text-sm">View Messages ({{ $complaint->messages->count() }})</button>
+                                                <div class="flex flex-wrap gap-1">
+                                                    @if(Auth::user()->role !== 'admin')
+                                                        <a href="{{ route('complaints.edit', $complaint) }}" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">Edit</a>
+                                                        @if($complaint->messages->count() > 0)
+                                                            <button onclick="viewMessages({{ $complaint->id }})" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">Messages ({{ $complaint->messages->count() }})</button>
+                                                        @endif
                                                     @endif
-                                                @endif
-                                                @if(Auth::user()->role === 'admin')
-                                                    @if($complaint->status === 'pending')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="in-progress">
-                                                            <button type="submit" class="text-green-600 hover:text-green-800">Mark In Progress</button>
-                                                        </form>
-                                                    @elseif($complaint->status === 'in-progress')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="resolved">
-                                                            <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
-                                                        </form>
-                                                    @elseif($complaint->status === 'resolved')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="pending">
-                                                            <button type="submit" class="text-yellow-600 hover:text-yellow-800">Mark as Pending</button>
-                                                        </form>
+                                                    @if(Auth::user()->role === 'admin')
+                                                        @if($complaint->status === 'pending')
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="in-progress">
+                                                                <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">In Progress</button>
+                                                            </form>
+                                                        @elseif($complaint->status === 'in-progress')
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="resolved">
+                                                                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">Resolved</button>
+                                                            </form>
+                                                        @elseif($complaint->status === 'resolved')
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="pending">
+                                                                <button type="submit" class="bg-yellow-500 text-white px-2 py-1 rounded text-xs hover:bg-yellow-600">Pending</button>
+                                                            </form>
+                                                        @endif
                                                     @endif
-                                                @endif
-                                                <form action="{{ route('complaints.destroy', $complaint) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this complaint?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-800 ml-2">Delete</button>
-                                                </form>
+                                                    <form action="{{ route('complaints.destroy', $complaint) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this complaint?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Delete</button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

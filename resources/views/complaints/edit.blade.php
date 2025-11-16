@@ -16,7 +16,29 @@
                         <!-- Category -->
                         <div class="mb-4">
                             <x-input-label for="category" :value="__('Category')" />
-                            <x-text-input id="category" class="block mt-1 w-full" type="text" name="category" :value="old('category', $complaint->category)" required autofocus autocomplete="category" />
+                            <select name="category" id="category" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                <option value="">Select a category</option>
+                                <option value="Noise Disturbance" {{ old('category', $complaint->category) == 'Noise Disturbance' ? 'selected' : '' }}>Noise Disturbance</option>
+                                <option value="Domestic Dispute" {{ old('category', $complaint->category) == 'Domestic Dispute' ? 'selected' : '' }}>Domestic Dispute</option>
+                                <option value="Theft or Property Damage" {{ old('category', $complaint->category) == 'Theft or Property Damage' ? 'selected' : '' }}>Theft or Property Damage</option>
+                                <option value="Trespassing" {{ old('category', $complaint->category) == 'Trespassing' ? 'selected' : '' }}>Trespassing</option>
+                                <option value="Physical Injury or Assault" {{ old('category', $complaint->category) == 'Physical Injury or Assault' ? 'selected' : '' }}>Physical Injury or Assault</option>
+                                <option value="Public Disturbance or Scandal" {{ old('category', $complaint->category) == 'Public Disturbance or Scandal' ? 'selected' : '' }}>Public Disturbance or Scandal</option>
+                                <option value="Vandalism" {{ old('category', $complaint->category) == 'Vandalism' ? 'selected' : '' }}>Vandalism</option>
+                                <option value="Threat or Harassment" {{ old('category', $complaint->category) == 'Threat or Harassment' ? 'selected' : '' }}>Threat or Harassment</option>
+                                <option value="Violation of Barangay Ordinance" {{ old('category', $complaint->category) == 'Violation of Barangay Ordinance' ? 'selected' : '' }}>Violation of Barangay Ordinance</option>
+                                <option value="Illegal Gambling" {{ old('category', $complaint->category) == 'Illegal Gambling' ? 'selected' : '' }}>Illegal Gambling</option>
+                                <option value="Curfew Violation" {{ old('category', $complaint->category) == 'Curfew Violation' ? 'selected' : '' }}>Curfew Violation</option>
+                                <option value="Loud Karaoke or Parties" {{ old('category', $complaint->category) == 'Loud Karaoke or Parties' ? 'selected' : '' }}>Loud Karaoke or Parties</option>
+                                <option value="Garbage or Sanitation Complaint" {{ old('category', $complaint->category) == 'Garbage or Sanitation Complaint' ? 'selected' : '' }}>Garbage or Sanitation Complaint</option>
+                                <option value="Animal Nuisance (e.g., barking dogs or stray animals)" {{ old('category', $complaint->category) == 'Animal Nuisance (e.g., barking dogs or stray animals)' ? 'selected' : '' }}>Animal Nuisance (e.g., barking dogs or stray animals)</option>
+                                <option value="Boundary or Property Dispute" {{ old('category', $complaint->category) == 'Boundary or Property Dispute' ? 'selected' : '' }}>Boundary or Property Dispute</option>
+                                <option value="Unpaid Debt or Money Issue" {{ old('category', $complaint->category) == 'Unpaid Debt or Money Issue' ? 'selected' : '' }}>Unpaid Debt or Money Issue</option>
+                                <option value="Neighbor Conflict" {{ old('category', $complaint->category) == 'Neighbor Conflict' ? 'selected' : '' }}>Neighbor Conflict</option>
+                                <option value="Barangay Staff Misconduct" {{ old('category', $complaint->category) == 'Barangay Staff Misconduct' ? 'selected' : '' }}>Barangay Staff Misconduct</option>
+                                <option value="Missing Person Report" {{ old('category', $complaint->category) == 'Missing Person Report' ? 'selected' : '' }}>Missing Person Report</option>
+                                <option value="Other" {{ old('category', $complaint->category) == 'Other' ? 'selected' : '' }}>Other</option>
+                            </select>
                             <x-input-error :messages="$errors->get('category')" class="mt-2" />
                         </div>
 

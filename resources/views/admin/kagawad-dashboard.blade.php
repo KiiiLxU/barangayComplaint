@@ -77,23 +77,24 @@
                                             </td>
                                             <td class="px-4 py-2 border">{{ $complaint->created_at->format('Y-m-d') }}</td>
                                             <td class="px-4 py-2 border">
-                                                @if($complaint->status === 'in-progress')
-                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="resolved">
-                                                        <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
-                                                    </form>
-                                                    <br>
-                                                    <button onclick="sendOfficialMessage({{ $complaint->id }})" class="text-green-600 hover:text-green-800 text-sm mt-1">Send Message</button>
-                                                @elseif($complaint->status === 'resolved')
-                                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="in-progress">
-                                                        <button type="submit" class="text-yellow-600 hover:text-yellow-800">Mark In Progress</button>
-                                                    </form>
-                                                @endif
+                                                <div class="flex flex-wrap gap-1">
+                                                    @if($complaint->status === 'in-progress')
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="resolved">
+                                                            <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">Resolved</button>
+                                                        </form>
+                                                        <button onclick="sendOfficialMessage({{ $complaint->id }})" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">Message</button>
+                                                    @elseif($complaint->status === 'resolved')
+                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status" value="in-progress">
+                                                            <button type="submit" class="bg-yellow-500 text-white px-2 py-1 rounded text-xs hover:bg-yellow-600">In Progress</button>
+                                                        </form>
+                                                    @endif
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -134,20 +135,21 @@
 
     <!-- Modal for Sending Official Message -->
     <div id="messageModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-        <div class="relative bg-white rounded-lg max-w-2xl max-h-full p-6 overflow-y-auto">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold">Send Official Message</h3>
-                <button onclick="closeMessageModal()" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">&times;</button>
+        <div class="relative bg-white rounded-lg w-full max-w-4xl max-h-[90vh] p-10 overflow-y-auto">
+
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-semibold">Send Official Message</h3>
+                <button onclick="closeMessageModal()" class="text-gray-500 hover:text-gray-700 text-3xl font-bold">&times;</button>
             </div>
             <form id="messageForm" method="POST">
                 @csrf
-                <div class="mb-4">
-                    <label for="message" class="block font-medium text-sm text-gray-700">Message</label>
-                    <textarea name="message" id="message" rows="6" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required></textarea>
+                <div class="mb-6">
+                    <label for="message" class="block font-medium text-lg text-gray-700 mb-3">Message</label>
+                    <textarea name="message" id="message" rows="12" class="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 text-lg p-6" placeholder="Type your official message here..." required></textarea>
                 </div>
-                <div class="flex justify-end">
-                    <button type="button" onclick="closeMessageModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded mr-2">Cancel</button>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Send Message</button>
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="closeMessageModal()" class="bg-gray-300 text-gray-700 px-8 py-4 rounded-lg hover:bg-gray-400 transition-colors text-lg">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors text-lg">Send Message</button>
                 </div>
             </form>
         </div>

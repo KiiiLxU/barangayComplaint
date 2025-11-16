@@ -24,6 +24,10 @@ class Complaint extends Model
         'assigned_official_id',
     ];
 
+    protected $casts = [
+        'status_updated_at' => 'datetime',
+    ];
+
     // A complaint belongs to a user
     public function user()
     {

@@ -16,7 +16,7 @@ class ComplaintController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $query = Complaint::with('user', 'messages');
+        $query = Complaint::with('user', 'messages', 'assignedOfficial');
 
         $allowedRoles = ['admin', 'kagawad', 'kapitan'];
         if (!in_array($user->role, $allowedRoles)) {
@@ -24,8 +24,8 @@ class ComplaintController extends Controller
             $query->where('user_id', $user->id);
         }
 
-        // Search functionality
-        if ($request->has('search') && !empty($request->search)) {
+        // Search functionality (only for admins, kapitan, kagawad)
+        if (in_array($user->role, $allowedRoles) && $request->has('search') && !empty($request->search)) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('category', 'like', "%{$search}%")
@@ -92,7 +92,7 @@ class ComplaintController extends Controller
     {
         // Only allow users to edit their own complaints, not admins
         $allowedRoles = ['admin', 'kagawad', 'kapitan'];
-        if (in_array(Auth::user()->role, $allowedRoles) || Auth::id() !== $complaint->user_id) {
+        if (in_array(Auth::user()->role, $allowedRoles) && Auth::id() !== $complaint->user_id) {
             abort(403, 'Unauthorized action.');
         }
         return view('complaints.edit', compact('complaint'));

@@ -199,81 +199,83 @@
                                             </td>
                                             <td class="px-4 py-2 border">{{ $complaint->created_at->format('Y-m-d') }}</td>
                                             <td class="px-4 py-2 border">
-                                                @if(Auth::user()->role === 'kapitan')
-                                                    @if($complaint->status === 'pending')
-                                                        <form action="{{ route('complaints.assign', $complaint) }}" method="POST" class="inline mb-1">
-                                                            @csrf
-                                                            <select name="assigned_official_id" class="text-xs border border-gray-300 rounded px-2 py-1">
-                                                                <option value="">Assign to Kagawad</option>
-                                                                @foreach(\App\Models\BrgyOfficial::where('position', 'Kagawad')->get() as $official)
-                                                                    <option value="{{ $official->id }}">{{ $official->name }} (Purok {{ $official->purok_assigned }})</option>
-                                                                @endforeach
-                                                            </select>
-                                                            <button type="submit" class="text-purple-600 hover:text-purple-800 text-xs">Assign</button>
-                                                        </form>
-                                                        <br>
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="in-progress">
-                                                            <button type="submit" class="text-green-600 hover:text-green-800 text-xs">Mark In Progress</button>
-                                                        </form>
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline ml-1">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="resolved">
-                                                            <button type="submit" class="text-blue-600 hover:text-blue-800 text-xs">Mark Resolved</button>
-                                                        </form>
-                                                    @elseif($complaint->status === 'in-progress')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="resolved">
-                                                            <button type="submit" class="text-blue-600 hover:text-blue-800 text-xs">Mark Resolved</button>
-                                                        </form>
-                                                    @elseif($complaint->status === 'resolved')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="pending">
-                                                            <button type="submit" class="text-yellow-600 hover:text-yellow-800 text-xs">Mark as Pending</button>
-                                                        </form>
+                                                <div class="flex flex-wrap gap-1">
+                                                    @if(Auth::user()->role === 'kapitan')
+                                                        @if($complaint->status === 'pending')
+                                                            <form action="{{ route('complaints.assign', $complaint) }}" method="POST" class="inline mb-1">
+                                                                @csrf
+                                                                <select name="assigned_official_id" class="text-xs border border-gray-300 rounded px-2 py-1">
+                                                                    <option value="">Assign to Kagawad</option>
+                                                                    @foreach(\App\Models\BrgyOfficial::where('position', 'Kagawad')->get() as $official)
+                                                                        <option value="{{ $official->id }}">{{ $official->name }} (Purok {{ $official->purok_assigned }})</option>
+                                                                    @endforeach
+                                                                </select>
+                                                                <button type="submit" class="bg-purple-500 text-white px-2 py-1 rounded text-xs hover:bg-purple-600">Assign</button>
+                                                            </form>
+                                                            <br>
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="in-progress">
+                                                                <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">In Progress</button>
+                                                            </form>
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="resolved">
+                                                                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">Resolved</button>
+                                                            </form>
+                                                        @elseif($complaint->status === 'in-progress')
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="resolved">
+                                                                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">Resolved</button>
+                                                            </form>
+                                                        @elseif($complaint->status === 'resolved')
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="pending">
+                                                                <button type="submit" class="bg-yellow-500 text-white px-2 py-1 rounded text-xs hover:bg-yellow-600">Pending</button>
+                                                            </form>
+                                                        @endif
+                                                    @else
+                                                        @if($complaint->status === 'pending')
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="in-progress">
+                                                                <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded text-xs hover:bg-green-600">In Progress</button>
+                                                            </form>
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="resolved">
+                                                                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">Resolved</button>
+                                                            </form>
+                                                        @elseif($complaint->status === 'in-progress')
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="resolved">
+                                                                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs hover:bg-blue-600">Resolved</button>
+                                                            </form>
+                                                        @elseif($complaint->status === 'resolved')
+                                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="status" value="pending">
+                                                                <button type="submit" class="bg-yellow-500 text-white px-2 py-1 rounded text-xs hover:bg-yellow-600">Pending</button>
+                                                            </form>
+                                                        @endif
                                                     @endif
-                                                @else
-                                                    @if($complaint->status === 'pending')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="in-progress">
-                                                            <button type="submit" class="text-green-600 hover:text-green-800">Mark In Progress</button>
-                                                        </form>
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline ml-2">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="resolved">
-                                                            <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
-                                                        </form>
-                                                    @elseif($complaint->status === 'in-progress')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="resolved">
-                                                            <button type="submit" class="text-blue-600 hover:text-blue-800">Mark Resolved</button>
-                                                        </form>
-                                                    @elseif($complaint->status === 'resolved')
-                                                        <form action="{{ route('complaints.update', $complaint) }}" method="POST" class="inline">
-                                                            @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="status" value="pending">
-                                                            <button type="submit" class="text-yellow-600 hover:text-yellow-800">Mark as Pending</button>
-                                                        </form>
-                                                    @endif
-                                                @endif
-                                                <form action="{{ route('complaints.destroy', $complaint) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this complaint?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-800 ml-2">Delete</button>
-                                                </form>
+                                                    <form action="{{ route('complaints.destroy', $complaint) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this complaint?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600">Delete</button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

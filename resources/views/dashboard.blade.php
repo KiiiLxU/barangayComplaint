@@ -43,7 +43,14 @@
                             <div class="font-semibold text-primary-800">{{ Auth::user()->purok ?: 'Not set' }}</div>
                         </div>
                     </div>
-        
+                    <div class="mt-4">
+                        <x-secondary-button href="{{ route('profile.edit') }}" class="animate-scale-in">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                            </svg>
+                            Edit Profile
+                        </x-secondary-button>
+                    </div>
                 </div>
 
                 <!-- Action Buttons -->
