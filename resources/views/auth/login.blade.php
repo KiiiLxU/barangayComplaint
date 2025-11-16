@@ -17,6 +17,7 @@
 
         <!-- Centered Login Form -->
         <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 text-center text-white">
+            <img src="/bcs.png" alt="Barangay Complaint System Logo" class="w-24 h-24 mx-auto mb-4 drop-shadow-lg">
             <h1 class="text-4xl font-bold mb-6 drop-shadow-lg">Login</h1>
 
             <form method="POST" action="{{ route('login') }}" class="w-full max-w-md bg-white/20 p-8 rounded-lg backdrop-blur-sm">
