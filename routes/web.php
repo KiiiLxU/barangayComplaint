@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/complaints/{complaint}/assign', [ComplaintController::class, 'assign'])->name('complaints.assign');
     Route::post('/complaints/{complaint}/send-message', [ComplaintMessageController::class, 'sendOfficialMessage'])->name('complaints.send-message');
     Route::get('/complaints/{complaint}/messages', [ComplaintMessageController::class, 'getMessages'])->name('complaints.messages');
+    Route::put('/complaints/messages/{message}', [ComplaintMessageController::class, 'updateMessage'])->name('complaints.messages.update');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -43,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
 // Separate middleware for kagawad dashboard - only kagawads can access
 Route::middleware(['auth'])->group(function () {
     Route::get('/kagawad/dashboard', [AdminController::class, 'kagawadDashboard'])->name('kagawad.dashboard');
+    Route::get('/kagawad/complaints/{id}/details', [AdminController::class, 'getComplaintDetails'])->name('kagawad.complaint.details');
 });
 
 

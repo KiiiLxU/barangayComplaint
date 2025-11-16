@@ -40,9 +40,13 @@ class ComplaintMessageController extends Controller
      */
     public function getMessages(Complaint $complaint)
     {
-        // Only the complainant or authorized officials can view messages
+        // Only the complainant, assigned official, or authorized officials can view messages
         $allowedRoles = ['admin', 'kagawad', 'kapitan'];
-        if (Auth::id() !== $complaint->user_id && !in_array(Auth::user()->role, $allowedRoles)) {
+        $isComplainant = Auth::id() === $complaint->user_id;
+        $isAssignedOfficial = $complaint->assigned_official_id && Auth::id() === $complaint->assignedOfficial->user_id;
+        $hasRole = in_array(Auth::user()->role, $allowedRoles);
+
+        if (!$isComplainant && !$isAssignedOfficial && !$hasRole) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -52,5 +56,26 @@ class ComplaintMessageController extends Controller
             ->get();
 
         return response()->json($messages);
+    }
+
+    /**
+     * Update a message sent by the current user.
+     */
+    public function updateMessage(Request $request, ComplaintMessage $message)
+    {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        // Only the sender can edit their message
+        if ($message->sender_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $message->update([
+            'message' => $request->message,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Message updated successfully.']);
     }
 }

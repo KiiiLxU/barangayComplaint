@@ -45,6 +45,7 @@
                 .then(response => response.json())
                 .then(data => {
                     let messagesHtml = '';
+                    const currentUserId = {{ Auth::id() }};
                     if (data.length === 0) {
                         messagesHtml = '<p>No messages yet.</p>';
                     } else {
@@ -55,7 +56,8 @@
                                         <strong>${message.sender.name}</strong>
                                         <small class="text-gray-500">${new Date(message.created_at).toLocaleString()}</small>
                                     </div>
-                                    <textarea class="w-full p-4 border border-gray-300 rounded bg-white text-gray-700" rows="4" readonly style="min-height: 120px;">${message.message}</textarea>
+                                    <textarea class="w-full p-4 border border-gray-300 rounded bg-white text-gray-700" rows="4" readonly style="min-height: 120px;" id="message-${message.id}">${message.message}</textarea>
+                                    ${message.sender_id === currentUserId ? `<button onclick="editMessage(${message.id})" class="mt-2 bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">Edit</button>` : ''}
                                 </div>
                             `;
                         });
@@ -71,6 +73,68 @@
 
         function closeMessagesModal() {
             document.getElementById('messagesModal').classList.add('hidden');
+        }
+
+        function editMessage(messageId) {
+            const textarea = document.getElementById(`message-${messageId}`);
+            const originalText = textarea.value;
+            textarea.readOnly = false;
+            textarea.focus();
+
+            // Add save and cancel buttons
+            const container = textarea.parentElement;
+            const existingButtons = container.querySelector('.edit-buttons');
+            if (existingButtons) existingButtons.remove();
+
+            const buttonDiv = document.createElement('div');
+            buttonDiv.className = 'edit-buttons mt-2 flex gap-2';
+            buttonDiv.innerHTML = `
+                <button onclick="saveMessage(${messageId}, '${originalText}')" class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">Save</button>
+                <button onclick="cancelEdit(${messageId}, '${originalText.replace(/'/g, "\\'")}')" class="bg-gray-500 text-white px-3 py-1 rounded text-sm hover:bg-gray-600">Cancel</button>
+            `;
+            container.appendChild(buttonDiv);
+        }
+
+        function saveMessage(messageId, originalText) {
+            const textarea = document.getElementById(`message-${messageId}`);
+            const newText = textarea.value;
+
+            if (newText.trim() === '') {
+                alert('Message cannot be empty.');
+                return;
+            }
+
+            fetch(`/complaints/messages/${messageId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ message: newText })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    textarea.readOnly = true;
+                    const buttonDiv = textarea.parentElement.querySelector('.edit-buttons');
+                    if (buttonDiv) buttonDiv.remove();
+                    alert('Message updated successfully.');
+                } else {
+                    alert('Error updating message.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating message.');
+            });
+        }
+
+        function cancelEdit(messageId, originalText) {
+            const textarea = document.getElementById(`message-${messageId}`);
+            textarea.value = originalText;
+            textarea.readOnly = true;
+            const buttonDiv = textarea.parentElement.querySelector('.edit-buttons');
+            if (buttonDiv) buttonDiv.remove();
         }
 
         // Close modal when clicking outside the image
