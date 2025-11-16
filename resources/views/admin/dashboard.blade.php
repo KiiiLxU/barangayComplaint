@@ -83,22 +83,22 @@
 
             <!-- Complaint Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <a href="{{ route('admin.dashboard') }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <a href="{{ route('kapitan.dashboard') }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
                     <h3 class="text-lg font-medium">Total Complaints</h3>
                     <p class="text-3xl font-bold text-blue-600 mt-2">{{ $totalComplaints }}</p>
                 </a>
 
-                <a href="{{ route('admin.dashboard', ['status' => 'pending']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <a href="{{ route('kapitan.dashboard', ['status' => 'pending']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
                     <h3 class="text-lg font-medium">Pending</h3>
                     <p class="text-3xl font-bold text-yellow-500 mt-2">{{ $pendingComplaints }}</p>
                 </a>
 
-                <a href="{{ route('admin.dashboard', ['status' => 'in-progress']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <a href="{{ route('kapitan.dashboard', ['status' => 'in-progress']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
                     <h3 class="text-lg font-medium">In Progress</h3>
                     <p class="text-3xl font-bold text-orange-500 mt-2">{{ $inProgressComplaints }}</p>
                 </a>
 
-                <a href="{{ route('admin.dashboard', ['status' => 'resolved']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <a href="{{ route('kapitan.dashboard', ['status' => 'resolved']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
                     <h3 class="text-lg font-medium">Resolved</h3>
                     <p class="text-3xl font-bold text-green-500 mt-2">{{ $resolvedComplaints }}</p>
                 </a>
@@ -111,7 +111,7 @@
 
                     <!-- Search and Filter -->
                     <div class="mb-4 flex flex-wrap gap-4 justify-between items-center">
-                        <form method="GET" action="{{ route('admin.dashboard') }}" class="flex gap-2">
+                        <form method="GET" action="{{ route('kapitan.dashboard') }}" class="flex gap-2">
                             <select name="search" class="border border-gray-300 rounded px-3 py-2 flex-1">
                                 <option value="">Search by category</option>
                                 <option value="Noise Disturbance" {{ request('search') == 'Noise Disturbance' ? 'selected' : '' }}>Noise Disturbance</option>
@@ -143,7 +143,7 @@
                             </select>
                             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Filter</button>
                         </form>
-                        <a href="{{ route('admin.history') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                        <a href="{{ route('kapitan.history') }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
                             Case History
                         </a>
                     </div>

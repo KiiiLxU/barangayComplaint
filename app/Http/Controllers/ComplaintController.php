@@ -141,7 +141,7 @@ class ComplaintController extends Controller
         $complaint->update($data);
 
         $allowedRoles = ['admin', 'kagawad', 'kapitan'];
-        $redirectRoute = in_array(Auth::user()->role, $allowedRoles) ? 'admin.dashboard' : 'complaints.index';
+        $redirectRoute = in_array(Auth::user()->role, $allowedRoles) ? (Auth::user()->role === 'kapitan' ? 'kapitan.dashboard' : 'kagawad.dashboard') : 'complaints.index';
         return redirect()->route($redirectRoute)->with('success', 'Complaint updated successfully!');
     }
 
@@ -159,7 +159,7 @@ class ComplaintController extends Controller
         $complaint->delete();
 
         $allowedRoles = ['admin', 'kagawad', 'kapitan'];
-        $redirectRoute = in_array(Auth::user()->role, $allowedRoles) ? 'admin.dashboard' : 'complaints.index';
+        $redirectRoute = in_array(Auth::user()->role, $allowedRoles) ? (Auth::user()->role === 'kapitan' ? 'kapitan.dashboard' : 'kagawad.dashboard') : 'complaints.index';
         return redirect()->route($redirectRoute)->with('success', 'Complaint deleted successfully!');
     }
 

@@ -71,7 +71,7 @@ class BrgyOfficialController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.officials.index')->with('success', 'Official added successfully!');
+        return redirect()->route('kapitan.officials.index')->with('success', 'Official added successfully!');
     }
 
     /**
@@ -106,7 +106,7 @@ class BrgyOfficialController extends Controller
 
         $official->update($data);
 
-        return redirect()->route('admin.officials.index')->with('success', 'Official updated successfully!');
+        return redirect()->route('kapitan.officials.index')->with('success', 'Official updated successfully!');
     }
 
     /**
@@ -120,6 +120,6 @@ class BrgyOfficialController extends Controller
 
         $official->delete();
 
-        return redirect()->route('admin.officials.index')->with('success', 'Official deleted successfully!');
+        return redirect()->route('kapitan.officials.index')->with('success', 'Official deleted successfully!');
     }
 }

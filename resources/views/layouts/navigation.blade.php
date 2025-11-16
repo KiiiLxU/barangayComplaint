@@ -50,11 +50,11 @@
                             </x-dropdown-link>
 
                             @if(in_array(Auth::user()->role, ['kagawad', 'resident']))
-                                <x-dropdown-link :href="route('admin.officials.index')">
+                                <x-dropdown-link :href="route('kapitan.officials.index')">
                                     {{ __('Barangay Officials') }}
                                 </x-dropdown-link>
                             @elseif(Auth::user()->role === 'kapitan')
-                                <x-dropdown-link :href="route('admin.officials.index')">
+                                <x-dropdown-link :href="route('kapitan.officials.index')">
                                     {{ __('Barangay Officials') }}
                                 </x-dropdown-link>
                             @endif

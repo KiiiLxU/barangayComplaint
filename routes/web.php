@@ -13,9 +13,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     if (Auth::user()->role === 'kapitan') {
-        return redirect(route('admin.dashboard'));
+        return redirect(route('kapitan.dashboard'));
     } elseif (Auth::user()->role === 'kagawad') {
-        return redirect(route('admin.kagawad-dashboard'));
+        return redirect(route('kagawad.dashboard'));
     }
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -33,16 +33,16 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('admin')->name('admin.dashboard');
-    Route::get('/admin/history', [AdminController::class, 'history'])->middleware('admin')->name('admin.history');
-    Route::get('/admin/complaints/{id}/details', [AdminController::class, 'getComplaintDetails'])->middleware('admin')->name('admin.complaint.details');
-    Route::get('admin/officials', [BrgyOfficialController::class, 'index'])->name('admin.officials.index');
-    Route::resource('admin/officials', BrgyOfficialController::class, ['as' => 'admin'])->except(['index'])->middleware('admin');
+    Route::get('/kapitan/dashboard', [AdminController::class, 'index'])->middleware('admin')->name('kapitan.dashboard');
+    Route::get('/kapitan/history', [AdminController::class, 'history'])->middleware('admin')->name('kapitan.history');
+    Route::get('/kapitan/complaints/{id}/details', [AdminController::class, 'getComplaintDetails'])->middleware('admin')->name('kapitan.complaint.details');
+    Route::get('kapitan/officials', [BrgyOfficialController::class, 'index'])->name('kapitan.officials.index');
+    Route::resource('kapitan/officials', BrgyOfficialController::class, ['as' => 'kapitan'])->except(['index'])->middleware('admin');
 });
 
 // Separate middleware for kagawad dashboard - only kagawads can access
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/kagawad-dashboard', [AdminController::class, 'kagawadDashboard'])->name('admin.kagawad-dashboard');
+    Route::get('/kagawad/dashboard', [AdminController::class, 'kagawadDashboard'])->name('kagawad.dashboard');
 });
 
 

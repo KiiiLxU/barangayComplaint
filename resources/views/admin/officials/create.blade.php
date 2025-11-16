@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('admin.officials.store') }}" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('kapitan.officials.store') }}" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-4">
@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="flex justify-end">
-                        <a href="{{ route('admin.officials.index') }}"
+                        <a href="{{ route('kapitan.officials.index') }}"
                            class="bg-gray-300 text-gray-700 px-4 py-2 rounded mr-2 hover:bg-gray-400">
                             Cancel
                         </a>

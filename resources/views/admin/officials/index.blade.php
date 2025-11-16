@@ -12,7 +12,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-semibold">Barangay Officials</h3>
                         @if(Auth::user()->role === 'kapitan')
-                            <a href="{{ route('admin.officials.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            <a href="{{ route('kapitan.officials.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                                 Add Official
                             </a>
                         @endif
@@ -51,14 +51,14 @@
                                             <td class="px-4 py-2 border">{{ $official->purok_assigned ? 'Purok ' . $official->purok_assigned : 'N/A' }}</td>
                                             <td class="px-4 py-2 border">
                                                 @if(Auth::user()->role === 'kapitan')
-                                                    <a href="{{ route('admin.officials.edit', $official) }}" class="text-blue-600 hover:text-blue-800 mr-2">Edit</a>
-                                                    <form action="{{ route('admin.officials.destroy', $official) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this official?')">
+                                                    <a href="{{ route('kapitan.officials.edit', $official) }}" class="text-blue-600 hover:text-blue-800 mr-2">Edit</a>
+                                                    <form action="{{ route('kapitan.officials.destroy', $official) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this official?')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="text-red-600 hover:text-red-800">Delete</button>
                                                     </form>
                                                 @elseif(Auth::user()->role === 'kagawad' && $official->name === Auth::user()->name)
-                                                    <a href="{{ route('admin.officials.edit', $official) }}" class="text-blue-600 hover:text-blue-800 mr-2">Edit Profile</a>
+                                                    <a href="{{ route('kapitan.officials.edit', $official) }}" class="text-blue-600 hover:text-blue-800 mr-2">Edit Profile</a>
                                                 @else
                                                     <span class="text-gray-500">Read Only</span>
                                                 @endif

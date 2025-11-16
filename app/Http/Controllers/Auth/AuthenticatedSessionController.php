@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
 
         // Redirect admin users to admin dashboard
         if (Auth::user()->role === 'admin') {
-            return redirect(route('admin.dashboard'));
+            return redirect(route('kapitan.dashboard'));
         }
 
         return redirect(route('dashboard'));
