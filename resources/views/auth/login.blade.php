@@ -31,7 +31,7 @@
 
                 <div class="mb-4 text-left">
                     <label for="password" class="block mb-1">Password</label>
-                    <input id="password" type="password" name="password" required
+                    <input id="password" type="password" name="password" required minlength="6" maxlength="15"
                            class="w-full px-4 py-2 rounded-lg text-black shadow-sm focus:ring-2 focus:ring-blue-400">
                 </div>
 

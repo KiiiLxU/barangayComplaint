@@ -83,24 +83,24 @@
 
             <!-- Complaint Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <a href="{{ route('kapitan.dashboard') }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <a href="{{ route('kapitan.dashboard') }}" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:from-blue-600 hover:to-blue-700 transition-all cursor-pointer">
                     <h3 class="text-lg font-medium">Total Complaints</h3>
-                    <p class="text-3xl font-bold text-blue-600 mt-2">{{ $totalComplaints }}</p>
+                    <p class="text-3xl font-bold mt-2">{{ $totalComplaints }}</p>
                 </a>
 
-                <a href="{{ route('kapitan.dashboard', ['status' => 'pending']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <a href="{{ route('kapitan.dashboard', ['status' => 'pending']) }}" class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:from-yellow-600 hover:to-yellow-700 transition-all cursor-pointer">
                     <h3 class="text-lg font-medium">Pending</h3>
-                    <p class="text-3xl font-bold text-yellow-500 mt-2">{{ $pendingComplaints }}</p>
+                    <p class="text-3xl font-bold mt-2">{{ $pendingComplaints }}</p>
                 </a>
 
-                <a href="{{ route('kapitan.dashboard', ['status' => 'in-progress']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <a href="{{ route('kapitan.dashboard', ['status' => 'in-progress']) }}" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:from-orange-600 hover:to-orange-700 transition-all cursor-pointer">
                     <h3 class="text-lg font-medium">In Progress</h3>
-                    <p class="text-3xl font-bold text-orange-500 mt-2">{{ $inProgressComplaints }}</p>
+                    <p class="text-3xl font-bold mt-2">{{ $inProgressComplaints }}</p>
                 </a>
 
-                <a href="{{ route('kapitan.dashboard', ['status' => 'resolved']) }}" class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:bg-gray-50 transition-colors cursor-pointer">
+                <a href="{{ route('kapitan.dashboard', ['status' => 'resolved']) }}" class="bg-gradient-to-r from-green-500 to-green-600 text-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center hover:from-green-600 hover:to-green-700 transition-all cursor-pointer">
                     <h3 class="text-lg font-medium">Resolved</h3>
-                    <p class="text-3xl font-bold text-green-500 mt-2">{{ $resolvedComplaints }}</p>
+                    <p class="text-3xl font-bold mt-2">{{ $resolvedComplaints }}</p>
                 </a>
             </div>
 
